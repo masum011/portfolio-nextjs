@@ -12,7 +12,7 @@ export const profile = {
 };
 
 export const stats = [
-  { value: "1 yr", label: "Professional experience" },
+  { value: "2+ yr", label: "Professional experience" },
   { value: "3", label: "Live websites shipped" },
   { value: "4", label: "Role-based dashboards built" },
   { value: "Offline", label: "Service Workers & IndexedDB" },
