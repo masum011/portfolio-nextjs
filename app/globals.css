@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+/*
+  Design tokens. Change --color-accent to re-colour the whole site.
+  Use them as Tailwind classes: bg-bg, bg-surface, text-ink, text-muted,
+  border-line, text-accent, bg-accent, font-display, font-mono ...
+*/
+@theme inline {
+  --color-bg: #f8f9f5;
+  --color-surface: #ffffff;
+  --color-surface-2: #f1f3eb;
+  --color-line: #e0e5d8;
+  --color-line-2: #c5ccbb;
+  --color-ink: #182016;
+  --color-muted: #596454;
+  --color-accent: #4d7c0f;
+
+  --font-sans: var(--nf-body), system-ui, sans-serif;
+  --font-display: var(--nf-display), system-ui, sans-serif;
+  --font-mono: var(--nf-mono), ui-monospace, monospace;
+}
+
+@keyframes tech-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@layer base {
+  .tech-marquee {
+    animation: tech-marquee 32s linear infinite;
+  }
+  .tech-marquee:hover {
+    animation-play-state: paused;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  section[id] {
+    scroll-margin-top: 7rem;
+  }
+  a:focus-visible,
+  button:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    .tech-marquee {
+      animation: none;
+    }
+  }
+}
