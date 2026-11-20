@@ -1,6 +1,6 @@
 # Masum Reza - Portfolio (Next.js)
 
-A dark, single-page developer portfolio built with **Next.js 16.4.6** (App Router), TypeScript, **Tailwind CSS v4** for styling and **Framer Motion** for animations.
+A dark, multi-page developer portfolio built with **Next.js 16.4.6** (App Router), TypeScript, **Tailwind CSS v4** for styling and **Framer Motion** for animations.
 
 Requires **Node.js 20.9 or newer** (Next.js 16 dropped Node 18).
 
@@ -27,6 +27,22 @@ npm run lint
 ## Edit your content
 
 Almost everything lives in one file: `lib/data.ts` (name, contact, stats, services, projects, skills, experience).
+
+## Pages and project structure
+
+The site uses the Next.js App Router. Each folder under `app/` defines a URL:
+
+| Route | Page |
+| --- | --- |
+| `/` | Landing page |
+| `/about` | About |
+| `/services` | Services |
+| `/work` | Selected projects |
+| `/toolkit` | Skills and tools |
+| `/experience` | Work and education history |
+| `/contact` | Contact details |
+
+`app/layout.tsx` provides the shared page shell. The route-aware navigation and footer live in `components/`, while reusable content and styling data remain in `lib/`.
 
 | To change | Edit |
 | --- | --- |

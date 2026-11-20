@@ -3,6 +3,8 @@ import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { profile } from "@/lib/data";
 import { MotionProvider } from "@/components/Motion";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"], variable: "--nf-body", display: "swap" });
 const display = Space_Grotesk({
@@ -45,7 +47,6 @@ export const metadata: Metadata = {
     "India",
   ],
   authors: [{ name: profile.name, url: siteUrl }],
-  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     url: siteUrl,
@@ -74,7 +75,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${inter.variable} ${display.variable} ${mono.variable}`}
     >
       <body className="overflow-x-scroll bg-bg font-sans leading-relaxed text-ink antialiased">
-        <MotionProvider>{children}</MotionProvider>
+        <MotionProvider>
+          <Navbar />
+          {children}
+          <Footer />
+        </MotionProvider>
       </body>
     </html>
   );

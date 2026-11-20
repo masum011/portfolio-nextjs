@@ -1,47 +1,26 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { profile } from "@/lib/data";
 import { btnAccentLg, container, link } from "@/lib/ui";
 
 const navItems = [
-  { href: "#about", label: "About" },
-  { href: "#services", label: "Services" },
-  { href: "#work", label: "Work" },
-  { href: "#experience", label: "Experience" },
+  { href: "/about", label: "About" },
+  { href: "/services", label: "Services" },
+  { href: "/work", label: "Work" },
+  { href: "/toolkit", label: "Toolkit" },
+  { href: "/experience", label: "Experience" },
 ];
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const [activeHref, setActiveHref] = useState("");
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const sectionHrefs = [...navItems.map((item) => item.href), "#contact"];
-    const sections = sectionHrefs
-      .map((href) => document.querySelector<HTMLElement>(href))
-      .filter((section): section is HTMLElement => section !== null);
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleSections = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        const currentSection = visibleSections[0]?.target;
-
-        if (currentSection instanceof HTMLElement) {
-          setActiveHref(`#${currentSection.id}`);
-        }
-      },
-      { rootMargin: "-15% 0px -70% 0px", threshold: 0 },
-    );
-
-    sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
-  }, []);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -82,51 +61,45 @@ export default function Navbar() {
     };
   }, [isOpen]);
 
-  function closeMenu() {
-    setIsOpen(false);
-  }
+  const isActive = (href: string) => pathname === href;
+  const contactIsActive = isActive("/contact");
 
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b border-line bg-bg/95 backdrop-blur-md">
         <div className={`${container} flex items-center justify-between gap-5 py-5 sm:py-7`}>
-          <a
-            href="#top"
+          <Link
+            href="/"
             className="inline-flex items-center gap-3 font-display text-lg font-bold text-ink sm:text-xl"
           >
             <span className="inline-flex size-9 items-center justify-center rounded-[10px] bg-accent text-[15px] text-bg">
               {profile.initials}
             </span>
             {profile.name}
-          </a>
+          </Link>
 
           <nav className="hidden items-center gap-7 text-sm sm:flex" aria-label="Primary">
-            {navItems.map((item) => {
-              const isActive = activeHref === item.href;
-              return (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  className={isActive ? "font-medium text-accent" : link}
-                  aria-current={isActive ? "location" : undefined}
-                  onClick={() => setActiveHref(item.href)}
-                >
-                  {item.label}
-                </a>
-              );
-            })}
-            <a
-              href="#contact"
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={isActive(item.href) ? "font-medium text-accent" : link}
+                aria-current={isActive(item.href) ? "page" : undefined}
+              >
+                {item.label}
+              </Link>
+            ))}
+            <Link
+              href="/contact"
               className={`inline-flex min-h-11 items-center rounded-full border px-5 font-medium ${
-                activeHref === "#contact"
+                contactIsActive
                   ? "border-accent text-accent"
                   : "border-line-2 text-ink hover:border-muted"
               }`}
-              aria-current={activeHref === "#contact" ? "location" : undefined}
-              onClick={() => setActiveHref("#contact")}
+              aria-current={contactIsActive ? "page" : undefined}
             >
               Hire me
-            </a>
+            </Link>
           </nav>
 
           <button
@@ -164,8 +137,8 @@ export default function Navbar() {
             <button
               type="button"
               aria-label="Close navigation menu"
-              className="absolute inset-0 size-full bg-ink/30 backdrop-blur-sm"
-              onClick={closeMenu}
+              className="absolute inset-0 z-0 size-full bg-ink/30 backdrop-blur-sm"
+              onClick={() => setIsOpen(false)}
             />
             <motion.aside
               id="mobile-navigation"
@@ -173,7 +146,7 @@ export default function Navbar() {
               role="dialog"
               aria-modal="true"
               aria-label="Mobile navigation"
-              className="absolute right-0 top-0 flex h-full w-[min(88vw,22rem)] flex-col overflow-y-auto border-l border-line bg-bg p-6 shadow-2xl"
+              className="absolute right-0 top-0 z-10 flex h-full w-[min(88vw,22rem)] flex-col overflow-y-auto border-l border-line bg-bg p-6 shadow-2xl"
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
@@ -186,7 +159,7 @@ export default function Navbar() {
                   type="button"
                   className="inline-flex size-11 items-center justify-center rounded-full border border-line-2 text-ink hover:border-muted"
                   aria-label="Close navigation menu"
-                  onClick={closeMenu}
+                  onClick={() => setIsOpen(false)}
                 >
                   <svg
                     aria-hidden="true"
@@ -202,40 +175,31 @@ export default function Navbar() {
               </div>
 
               <nav className="flex flex-col gap-2" aria-label="Mobile primary">
-                {navItems.map((item) => {
-                  const isActive = activeHref === item.href;
-                  return (
-                    <a
-                      key={item.href}
-                      href={item.href}
-                      className={`flex min-h-12 items-center rounded-xl px-4 text-base font-medium ${
-                        isActive
-                          ? "bg-surface-2 text-accent"
-                          : "text-ink hover:bg-surface-2 hover:text-accent"
-                      }`}
-                      aria-current={isActive ? "location" : undefined}
-                      onClick={() => {
-                        setActiveHref(item.href);
-                        closeMenu();
-                      }}
-                    >
-                      {item.label}
-                    </a>
-                  );
-                })}
-                <a
-                  href="#contact"
+                {navItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`flex min-h-12 items-center rounded-xl px-4 text-base font-medium ${
+                      isActive(item.href)
+                        ? "bg-surface-2 text-accent"
+                        : "text-ink hover:bg-surface-2 hover:text-accent"
+                    }`}
+                    aria-current={isActive(item.href) ? "page" : undefined}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+                <Link
+                  href="/contact"
                   className={`${btnAccentLg} mt-4 justify-center ${
-                    activeHref === "#contact" ? "ring-2 ring-accent ring-offset-2 ring-offset-bg" : ""
+                    contactIsActive ? "ring-2 ring-accent ring-offset-2 ring-offset-bg" : ""
                   }`}
-                  aria-current={activeHref === "#contact" ? "location" : undefined}
-                  onClick={() => {
-                    setActiveHref("#contact");
-                    closeMenu();
-                  }}
+                  aria-current={contactIsActive ? "page" : undefined}
+                  onClick={() => setIsOpen(false)}
                 >
                   Hire me
-                </a>
+                </Link>
               </nav>
             </motion.aside>
           </motion.div>
